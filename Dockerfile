@@ -59,7 +59,7 @@ RUN if [ "${TARGETARCH}" = "amd64" ]; then \
     echo [Install STL-THUMB] && \
     curl -O -L https://github.com/unlimitedbacon/stl-thumb/releases/download/v0.3.1/stl-thumb_0.3.1_amd64.deb && \
     dpkg -i stl-thumb_0.3.1_amd64.deb && \
-    rm -rf stl-thumb_0.3.1_amd64.deb;
+    rm -rf stl-thumb_0.3.1_amd64.deb; \
     fi
     
 RUN if [ "${TARGETARCH}" = "arm64" ]; then \
@@ -74,7 +74,7 @@ RUN if [ "${TARGETARCH}" = "arm64" ]; then \
     echo [Install STL-THUMB] && \
     curl -O -L https://github.com/unlimitedbacon/stl-thumb/releases/download/v0.3.1/stl-thumb_0.3.1_arm64.deb && \
     dpkg -i stl-thumb_0.3.1_arm64.deb && \
-    rm -rf stl-thumb_0.3.1_arm64.deb;
+    rm -rf stl-thumb_0.3.1_arm64.deb; \
     fi
 
 # Enable Apache XSendfile
