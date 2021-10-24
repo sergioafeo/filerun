@@ -14,8 +14,8 @@ VOLUME ["/var/www/html", "/user-files"]
 COPY filerun-optimization.ini /usr/local/etc/php/conf.d/
 COPY autoconfig.php entrypoint.sh wait-for-it.sh import-db.sh filerun.setup.sql supervisord.conf /
 # add PHP, extensions and third-party software
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
+RUN apt update && \
+    apt-get install -y --no-install-recommends \
         libapache2-mod-xsendfile \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -36,20 +36,19 @@ RUN apt-get update \
         unzip \
         cron \
         vim \
-        supervisor
-RUN apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && mkdir /var/log/supervisord /var/run/supervisord \
-    && sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
-    && docker-php-ext-configure ldap \
-    && docker-php-ext-install -j$(nproc) pdo_mysql exif zip gd opcache ldap \
-    && a2enmod rewrite \
+        supervisor && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir /var/log/supervisord /var/run/supervisord && \
+    sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml && \
+    docker-php-ext-configure zip && \
+    docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ && \
+    docker-php-ext-configure ldap && \
+    docker-php-ext-install -j$(nproc) pdo_mysql exif zip gd opcache ldap && \
+    a2enmod rewrite
 
 # Install STL and Install ionCube
 RUN if [ "${TARGETARCH}" = "amd64" ]; then \
-    echo [Install ionCube] && \
     curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.zip && \
     PHP_EXT_DIR=$(php-config --extension-dir) \
     unzip -j ioncube_loaders_lin_x86-64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR && \
@@ -62,7 +61,6 @@ RUN if [ "${TARGETARCH}" = "amd64" ]; then \
     fi
     
 RUN if [ "${TARGETARCH}" = "arm64" ]; then \
-    echo [Install ionCube]  && \
     curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_aarch4.zip && \
     PHP_EXT_DIR=$(php-config --extension-dir) \
     unzip -j ioncube_loaders_lin_aarch64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR && \
