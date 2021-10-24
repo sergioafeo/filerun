@@ -51,8 +51,7 @@ RUN apt update && \
 # Install STL and Install ionCube
 RUN if [ "${TARGETARCH}" = "amd64" ]; then \
     curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.zip && \
-    PHP_EXT_DIR=$(php-config --extension-dir) \
-    unzip -j ioncube_loaders_lin_x86-64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR && \
+    unzip -j ioncube_loaders_lin_x86-64.zip ioncube/ioncube_loader_lin_7.4.so -d /usr/local/lib/php/extensions/no-debug-non-zts-20190902/ && \
     echo "zend_extension=ioncube_loader_lin_7.4.so" >> /usr/local/etc/php/conf.d/00_ioncube_loader_lin_7.4.ini && \
     rm -rf ioncube_loaders_lin_x86-64.zip && \
     echo [Install STL-THUMB] && \
@@ -63,8 +62,7 @@ RUN if [ "${TARGETARCH}" = "amd64" ]; then \
     
 RUN if [ "${TARGETARCH}" = "arm64" ]; then \
     curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_aarch64.zip && \
-    PHP_EXT_DIR=$(php-config --extension-dir) \
-    unzip -j ioncube_loaders_lin_aarch64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR && \
+    unzip -j ioncube_loaders_lin_aarch64.zip ioncube/ioncube_loader_lin_7.4.so -d /usr/local/lib/php/extensions/no-debug-non-zts-20190902/ && \
     echo "zend_extension=ioncube_loader_lin_7.4.so" >> /usr/local/etc/php/conf.d/00_ioncube_loader_lin_7.4.ini && \
     rm -rf ioncube_loaders_lin_aarch64.zip && \
     echo [Install STL-THUMB] && \
