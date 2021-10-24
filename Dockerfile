@@ -46,18 +46,37 @@ RUN apt-get clean \
     && docker-php-ext-configure ldap \
     && docker-php-ext-install -j$(nproc) pdo_mysql exif zip gd opcache ldap \
     && a2enmod rewrite \
-# Install ionCube
-    && echo [Install ionCube] \
-    && curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.zip \
-    && PHP_EXT_DIR=$(php-config --extension-dir) \
-    && unzip -j ioncube_loaders_lin_x86-64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR \
-    && echo "zend_extension=ioncube_loader_lin_7.4.so" >> /usr/local/etc/php/conf.d/00_ioncube_loader_lin_7.4.ini \
-    && rm -rf ioncube_loaders_lin_x86-64.zip \
+
+RUN if [ "${TARGETARCH}" = "amd64" ]; then \
+    # Install ionCube
+    echo [Install ionCube]  && \
+    curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.zip && \
+    PHP_EXT_DIR=$(php-config --extension-dir) \
+    unzip -j ioncube_loaders_lin_x86-64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR && \
+    echo "zend_extension=ioncube_loader_lin_7.4.so" >> /usr/local/etc/php/conf.d/00_ioncube_loader_lin_7.4.ini && \
+    rm -rf ioncube_loaders_lin_x86-64.zip && \
 # Install STL-THUMB
-    && echo [Install STL-THUMB] \
-    && curl -O -L https://github.com/unlimitedbacon/stl-thumb/releases/download/v0.3.1/stl-thumb_0.3.1_amd64.deb \
-    && dpkg -i stl-thumb_0.3.1_amd64.deb \
-    && rm -rf stl-thumb_0.3.1_amd64.deb \
+    echo [Install STL-THUMB] && \
+    curl -O -L https://github.com/unlimitedbacon/stl-thumb/releases/download/v0.3.1/stl-thumb_0.3.1_amd64.deb && \
+    dpkg -i stl-thumb_0.3.1_amd64.deb && \
+    rm -rf stl-thumb_0.3.1_amd64.deb;
+    fi
+    
+RUN if [ "${TARGETARCH}" = "arm64" ]; then \
+    # Install ionCube
+    echo [Install ionCube]  && \
+    curl -O -L https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_aarch4.zip && \
+    PHP_EXT_DIR=$(php-config --extension-dir) \
+    unzip -j ioncube_loaders_lin_aarch64.zip ioncube/ioncube_loader_lin_7.4.so -d $PHP_EXT_DIR && \
+    echo "zend_extension=ioncube_loader_lin_7.4.so" >> /usr/local/etc/php/conf.d/00_ioncube_loader_lin_7.4.ini && \
+    rm -rf ioncube_loaders_lin_aarch.zip && \
+# Install STL-THUMB
+    echo [Install STL-THUMB] && \
+    curl -O -L https://github.com/unlimitedbacon/stl-thumb/releases/download/v0.3.1/stl-thumb_0.3.1_arm64.deb && \
+    dpkg -i stl-thumb_0.3.1_arm64.deb && \
+    rm -rf stl-thumb_0.3.1_arm64.deb;
+    fi
+
 # Enable Apache XSendfile
     && echo [Enable Apache XSendfile] \
     && echo "XSendFile On\nXSendFilePath /user-files" | tee "/etc/apache2/conf-available/filerun.conf" \
