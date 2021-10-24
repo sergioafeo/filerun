@@ -15,7 +15,7 @@ COPY filerun-optimization.ini /usr/local/etc/php/conf.d/
 COPY autoconfig.php entrypoint.sh wait-for-it.sh import-db.sh filerun.setup.sql supervisord.conf /
 # add PHP, extensions and third-party software
 RUN apt-get update \
-    && apt-get install -y \
+    && apt-get install -y --no-install-recommends \
         libapache2-mod-xsendfile \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
