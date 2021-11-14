@@ -8,7 +8,8 @@ ENV FR_DB_HOST=db \
     APACHE_RUN_USER=user \
     APACHE_RUN_USER_ID=1000 \
     APACHE_RUN_GROUP=user \
-    APACHE_RUN_GROUP_ID=1000
+    APACHE_RUN_GROUP_ID=1000 \
+    BASE_URL=/filerun
 VOLUME ["/var/www/html", "/user-files"]
 # set recommended PHP.ini settings
 # see http://docs.filerun.com/php_configuration
