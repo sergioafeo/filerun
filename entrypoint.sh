@@ -9,13 +9,13 @@ if ! id -u ${APACHE_RUN_USER} > /dev/null 2>&1; then
 fi
 
 # Install FileRun on first run
-if [ ! -e /var/www/html/index.php ];  then
+if [ ! -e /var/www/html/${BASE_URL}/index.php ];  then
 	echo "[FileRun fresh install]"
 	mysql_host="${FR_DB_HOST:-mysql}"
 	mysql_port="${FR_DB_PORT:-3306}"
 	/wait-for-it.sh $mysql_host:$mysql_port -t 120 -- /import-db.sh
 	unzip -q /filerun.zip -d /var/www/html/${BASE_URL}
-	cp /autoconfig.php /var/www/html/{BASE_URL}/system/data/
+	cp /autoconfig.php /var/www/html/${BASE_URL}/system/data/
 	chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html
 	chown ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /user-files
 fi

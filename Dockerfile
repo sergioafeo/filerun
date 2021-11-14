@@ -1,5 +1,6 @@
 FROM php:7.4-apache-buster
 ARG TARGETARCH
+ARG VIRTUAL_HOST=saf.ddns.net
 ENV FR_DB_HOST=db \
     FR_DB_PORT=3306 \
     FR_DB_NAME=filerun \
@@ -9,7 +10,8 @@ ENV FR_DB_HOST=db \
     APACHE_RUN_USER_ID=1000 \
     APACHE_RUN_GROUP=user \
     APACHE_RUN_GROUP_ID=1000 \
-    BASE_URL=
+    BASE_URL=\
+    VIRTUAL_HOST=${VIRTUAL_HOST}
 VOLUME ["/var/www/html", "/user-files"]
 # set recommended PHP.ini settings
 # see http://docs.filerun.com/php_configuration
@@ -72,9 +74,12 @@ RUN if [ "${TARGETARCH}" = "arm64" ]; then \
     rm -rf stl-thumb_0.3.1_arm64.deb; \
     fi
 
+# set server name
+RUN echo "ServerName ${VIRTUAL_HOST}" | tee /etc/apache2/conf-available/fqdn.conf && a2enconf fqdn 
+
 # Enable Apache XSendfile
 RUN echo [Enable Apache XSendfile] && \
-    mkdir /user-files && \
+    # mkdir /user-files && \
     echo "XSendFile On\nXSendFilePath /user-files" | tee "/etc/apache2/conf-available/filerun.conf" && \
     a2enconf filerun && \
     echo [Download FileRun installation package version 2021.03.26] && \
